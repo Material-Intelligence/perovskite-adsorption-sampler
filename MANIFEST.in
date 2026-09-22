@@ -1,0 +1,27 @@
+# Source distribution contents.
+#
+# setuptools already picks up LICENSE, NOTICE, README.md, pyproject.toml and src/**, and
+# distutils auto-includes tests/test*.py. That default sdist is broken in practice: it ships
+# the test modules without tests/conftest.py and without the structures under data/ that every
+# test reads. The grafts below make the sdist self-contained, so `pytest` passes inside an
+# unpacked tarball exactly as it does in a git checkout.
+include NOTICE
+include CITATION.cff
+include MANIFEST.in
+include models/README.md
+
+graft data
+graft tests
+graft examples
+graft docs
+graft scripts
+graft tools
+
+# Never ship build or editor debris, model weights, or DFT output.
+global-exclude *.py[cod]
+global-exclude *.so
+global-exclude .DS_Store
+global-exclude *.pt
+global-exclude *.pth
+global-exclude *.safetensors
+prune **/__pycache__

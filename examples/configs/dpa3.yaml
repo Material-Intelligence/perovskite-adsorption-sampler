@@ -1,0 +1,66 @@
+# Full adsorption workflow: DPA-3 screening, then optional VASP verification.
+#
+# Run it from the repository root with:
+#   srun -n 16 --gpus-per-task=1 python scripts/run_adsorption.py \
+#       --config examples/configs/dpa3.yaml
+#
+# The workflow is resumable: point --output at an existing run directory and each
+# molecule that already reached a completed stage is skipped.
+
+# -----------------------------------------------------------------------------
+# Input structures (paths are relative to the working directory)
+# -----------------------------------------------------------------------------
+slab: data/slabs/FAPbI3_3x3_zcut017.vasp
+molecules_dir: data/molecules
+pattern: "*.vasp"
+
+# Output directory, used exactly as given: no timestamp is appended, and an existing
+# directory containing metadata.json is resumed rather than overwritten.
+output: outputs/adsorption
+
+# -----------------------------------------------------------------------------
+# MLP calculator
+# -----------------------------------------------------------------------------
+calculator: dpa3
+# The DPA-3 model is not shipped; see models/README.md for how to download it.
+# Leave model_path unset to take it from $DPA3_OMAT24_MODEL or $DPA3_MODEL_PATH.
+# model_path: DPA-3.1-3M.pt
+
+# Relaxation
+fmax: 0.03        # force convergence threshold, eV/A
+steps: 150        # maximum optimizer steps
+
+# -----------------------------------------------------------------------------
+# Dual sampling
+# -----------------------------------------------------------------------------
+# Uniform sampling: orientations spread evenly over the sphere
+pb_num_uniform: 30
+
+# Heuristic sampling: orientations inside a cone around the binding direction
+pb_num_heuristic: 12
+pb_cone: 25.0     # cone half-angle in degrees
+
+# -----------------------------------------------------------------------------
+# Results
+# -----------------------------------------------------------------------------
+save_top: 5       # keep the top N structures, ranked by anomaly priority
+
+# -----------------------------------------------------------------------------
+# Precomputed references (optional; skips the matching relaxation)
+# -----------------------------------------------------------------------------
+# relaxed_slab_file: outputs/adsorption/slab/mlp/slab_relaxed.vasp
+# relaxed_slab_energy: -1234.56  # eV
+
+# -----------------------------------------------------------------------------
+# DFT verification (optional)
+# -----------------------------------------------------------------------------
+run_dft: false    # set true to run VASP on the best MLP structures
+dft_mode: scf     # scf (single point) or opt (relaxation)
+vasp_command: vasp_std
+
+# POTCAR directory. Leave it unset and export VASP_PP_PATH instead:
+#   export VASP_PP_PATH=/path/to/your/potpaw
+# potcar_dir:
+
+# Precomputed DFT slab energy (optional; skips the slab DFT calculation)
+# dft_slab_energy: -1234.56  # eV

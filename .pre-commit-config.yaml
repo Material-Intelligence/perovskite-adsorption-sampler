@@ -1,0 +1,36 @@
+# Optional local hooks: `pip install pre-commit && pre-commit install`.
+# They run the same checks as .github/workflows/ci.yml, one commit earlier.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      # Same ceiling as MAX_FILE_BYTES in tools/release_check.py: model weights and DFT
+      # output belong in an archive, not in a source repository.
+      - id: check-added-large-files
+        args: [--maxkb=5120]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.8
+    hooks:
+      - id: ruff
+        args: [--fix]
+
+  - repo: https://github.com/psf/black
+    rev: 26.5.1
+    hooks:
+      - id: black
+
+  - repo: local
+    hooks:
+      # Runs on the whole tree rather than on the staged files, because the rules are about
+      # what the tree as a whole must not contain. Standard library only, so no extra env.
+      - id: hygiene-check
+        name: repository hygiene check
+        entry: python tools/release_check.py
+        language: system
+        pass_filenames: false

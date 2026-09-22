@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Cheap gate: the hygiene scanner uses the standard library only, and the linters need
+  # nothing from the package, so this job finishes in well under a minute.
+  lint:
+    name: lint + hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - name: Repository hygiene check
+        run: python tools/release_check.py
+
+      - name: Install linters
+        run: uv pip install --system "ruff>=0.16,<0.17" "black>=26.0,<27"
+
+      - name: ruff
+        run: ruff check .
+
+      - name: black
+        run: black --check .
+
+  # Slower gate: fairchem-core pulls in torch and a large scientific stack, so expect this
+  # job to spend several minutes installing before it runs anything.
+  tests:
+    name: tests (python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # fairchem-core 2.x requires Python >= 3.11, which sets the floor for the whole
+        # package; 3.12 is the newest version with published CPU wheels for every dependency.
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      # Installed first, and from the CPU index, so that the package install below finds the
+      # requirement already satisfied instead of pulling the multi-gigabyte CUDA build from
+      # PyPI. The specifier must stay compatible with fairchem-core's own `torch~=` pin.
+      - name: Install CPU PyTorch
+        run: uv pip install --system "torch~=2.13.0" --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install package
+        run: uv pip install --system -e ".[dev]"
+
+      - name: pytest
+        run: pytest -q tests
+
+  # Packaging gate: the two jobs above only ever see an editable install from a full git
+  # checkout, which hides both an incomplete sdist and a dependency that is satisfied by
+  # accident. This one builds the artifacts and installs the wheel into a clean environment.
+  package:
+    name: build + install the distributions
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      - name: Check the metadata
+        run: uvx twine check dist/*
+
+      # CPU wheels again, for the same reason as in the tests job.
+      - name: Install the wheel into a clean environment
+        run: |
+          uv venv .pkgenv
+          uv pip install --python .pkgenv "torch~=2.13.0" --index-url https://download.pytorch.org/whl/cpu
+          uv pip install --python .pkgenv dist/*.whl
+
+      # The console script and the module that pulls in the whole FAIRChem chain. An
+      # undeclared transitive dependency shows up here and nowhere else.
+      - name: Smoke-test the installed package
+        run: |
+          .pkgenv/bin/perovml --version
+          .pkgenv/bin/python -c "import perovml.core.recipes"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: distributions
+          path: dist/

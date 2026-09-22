@@ -1,0 +1,35 @@
+# Parallel sampling over a directory of molecules, one shard per MPI/SLURM rank.
+#
+# Run it from the repository root with:
+#   srun -n 4 --gpus-per-task=1 python scripts/run_parallel_simple.py \
+#       --config examples/configs/parallel.yaml
+#
+# The runner reads SLURM_PROCID / SLURM_NTASKS to slice the molecule list, so the
+# same config works on one process or on many.
+
+# Input structures (paths are relative to the working directory)
+slab: data/slabs/FAPbI3_3x3_zcut017.vasp
+molecules_dir: data/molecules
+pattern: "*.vasp"
+
+# Output directory (a timestamped subdirectory is created inside it)
+output: outputs/parallel
+
+# Sampling
+generator: Pb_heuristic_sample # Pb_uniform_sample | Pb_heuristic_sample | single | multi
+pb_num: 12                     # orientations per molecule
+pb_cone: 30.0                  # cone half-angle in degrees
+
+# Relaxation
+fmax: 0.1                      # force convergence threshold, eV/A
+steps: 50                      # maximum optimizer steps
+
+# How many structures to keep per molecule ("all" keeps every candidate)
+save_top: 5
+
+# Calculator: switch to dpa3 once you have a model file.
+calculator: mock
+# calculator: dpa3
+# The DPA-3 model is not shipped; see models/README.md. Leave model_path unset to
+# take it from $DPA3_OMAT24_MODEL or $DPA3_MODEL_PATH.
+# model_path: DPA-3.1-3M.pt

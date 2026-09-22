@@ -1,0 +1,144 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "perovml"
+version = "0.1.0"
+description = "Adsorbate placement samplers for Pb-I terminated perovskite surfaces, with a resumable MLP-to-DFT screening workflow"
+readme = "README.md"
+# fairchem-core 2.x, the heaviest dependency, declares requires-python >=3.11 (and caps
+# itself below 3.15), so nothing older than 3.11 can resolve a working environment.
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE"]
+authors = [
+    { name = "Jiahao Xie", email = "xiejh.mail@gmail.com" },
+]
+keywords = ["perovskite", "adsorption", "machine-learned-potential", "dft", "surface-science"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Typing :: Typed",
+]
+
+# Core dependencies. Versions in the comments are the ones this package was developed and
+# checked against; the declared ranges are deliberately wider than that single point.
+dependencies = [
+    # Atomistic structures and I/O.
+    "ase>=3.26.0",                # checked with 3.29.0
+    "numpy>=2.0,<3",              # checked with 2.2.6; fairchem-core carries a tighter <2.5 cap
+    "scipy>=1.15",                # scripts/check_structures.py
+    "pandas>=2.0",                # result tables in perovml.parallel.reduce
+    "monty>=2025.1.3",            # monty.dev.requires guards
+    "pyyaml>=6.0",                # config files, imported unguarded by perovml.cli.*
+    "tqdm>=4.60",
+    # pymatgen is a hard requirement, not an extra: fairchem-data-oc already pulls it in, and
+    # perovml.utils.poscar_tools / perovml.cli.sd build pymatgen Poscar objects directly.
+    "pymatgen>=2025.1.9",         # checked with 2026.5.4
+    # The samplers subclass fairchem.data.oc.core.AdsorbateSlabConfig and the workflow reuses
+    # fairchem.core.components.calculate.recipes.adsorbml.detect_anomaly. That module layout is
+    # fairchem-core v2; v1 has no fairchem.core.components at all. The upper bound is not
+    # cosmetic: fairchem moves modules between minor releases, and has already moved some of
+    # them within v2.
+    "fairchem-core>=2.20,<3",     # checked with 2.22.0
+    "fairchem-data-oc>=1.0,<2",   # checked with 1.0.2
+    # Imported unconditionally by fairchem.core.components.calculate (via its md_runner and
+    # simulation_tools.trajectory), which perovml.core.recipes imports. fairchem-core declares
+    # pyarrow only under its own `extras` extra, so without this line a clean install of this
+    # package cannot import perovml.core.recipes at all.
+    "pyarrow>=15",                # checked with 25.0.1
+]
+
+[project.urls]
+Homepage = "https://github.com/xiejiahao/perovskite-adsorption-sampler"
+Repository = "https://github.com/xiejiahao/perovskite-adsorption-sampler"
+Issues = "https://github.com/xiejiahao/perovskite-adsorption-sampler/issues"
+
+[project.optional-dependencies]
+# DPA-3 calculator backend (perovml.calculators.dpa3). Model weights are not shipped; see
+# models/README.md. The upper bound is not cosmetic: the DPA-3.1-3M model card asks for
+# DeePMD-kit v3.1.0, so the extra must not silently resolve to a runtime the checkpoint was
+# never certified against.
+dpa3 = [
+    "deepmd-kit>=3.1,<3.2",
+]
+
+# SMILES-to-structure generation (scripts/gen_from_smiles.py).
+smiles = [
+    "rdkit>=2024.3",
+]
+
+# Rank discovery through MPI in scripts/optimize_molecules.py. The script falls back to the
+# Slurm environment variables when mpi4py is unavailable, so this is genuinely optional.
+mpi = [
+    "mpi4py>=3.1",
+]
+
+# Compatibility alias. pymatgen became a core dependency, so this extra installs nothing that a
+# plain `pip install perovml` does not already give you. It is kept only so that an existing
+# `perovml[heuristic]` in someone's requirements file keeps resolving.
+heuristic = [
+    "pymatgen>=2025.1.9",
+]
+
+# Development tooling. ruff and black are capped at the next major/year release so that a new
+# linter version cannot fail CI on rules that did not exist when the code was written.
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.16,<0.17",
+    "black>=26.0,<27",
+]
+
+all = [
+    "perovml[dpa3,smiles,mpi]",
+]
+
+[project.scripts]
+perovml = "perovml.cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+perovml = ["py.typed"]
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "W",  # pycodestyle warnings
+    "I",  # import sorting
+    "D",  # pydocstyle (Google convention, as used by pymatgen)
+]
+ignore = [
+    "E501",  # line length is black's job
+    "D105",  # magic methods do not need a docstring
+    "D205",  # summary line followed by a blank line: too strict for multi-line summaries
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests document themselves through their names; example and command-line scripts are read
+# top to bottom rather than as an API surface.
+"tests/**" = ["D"]
+"examples/**" = ["D"]
+"scripts/**" = ["D"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

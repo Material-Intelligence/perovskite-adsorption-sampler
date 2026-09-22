@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.pkgenv/
+
+# Test / lint caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Outputs
+outputs/
+example_output/
+# Literal filenames the README and the examples tell you to create in the repository root.
+my_run.yaml
+slab_sd.vasp
+heuristic.yaml
+uniform.yaml
+
+# DFT/VASP results and licensed VASP assets
+data/slabs/DFT_opt/
+data/slabs/DFT_scf/
+OUTCAR*
+OSZICAR*
+vasprun.xml*
+vaspout.h5*
+PROCAR*
+DOSCAR*
+EIGENVAL*
+IBZKPT*
+CHGCAR*
+WAVECAR*
+XDATCAR*
+POTCAR*
+
+# Model weights are never committed -- see models/README.md
+models/*.pt
+models/*.pth
+models/*.safetensors
+models/**/*.pt
+models/**/*.pth
+models/**/*.safetensors
+models/uma/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

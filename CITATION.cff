@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "perovskite-adsorption-sampler: adsorbate placement and MLP-to-DFT screening on perovskite surfaces"
+authors:
+  - family-names: Xie
+    given-names: Jiahao
+    email: xiejh.mail@gmail.com
+repository-code: "https://github.com/xiejiahao/perovskite-adsorption-sampler"
+license: MIT
+version: 0.1.0
+date-released: "2026-09-22"
+keywords:
+  - perovskite
+  - adsorption
+  - machine-learned interatomic potential
+  - DFT
+  - high-throughput screening

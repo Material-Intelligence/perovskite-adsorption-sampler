@@ -1,0 +1,49 @@
+perovskite-adsorption-sampler
+Copyright (c) 2026 Jiahao Xie
+
+This product includes and builds upon third-party open-source software.
+The MIT licence in LICENSE covers only the code in this repository; the
+components listed below remain under their own terms.
+
+--------------------------------------------------------------------------------
+FAIRChem (fairchem-core, fairchem-data-oc) -- MIT License
+Copyright (c) Meta Platforms, Inc. and affiliates.
+https://github.com/facebookresearch/fairchem
+
+    This repository derives directly from FAIRChem:
+
+      * `perovml.core.placement.PbAdsorbateSlabConfig` subclasses
+        `fairchem.data.oc.core.adsorbate_slab_config.AdsorbateSlabConfig`
+        and reuses its adslab construction and tagging conventions.
+      * The AdsorbML anomaly detection (`detect_anomaly`) and the relaxation
+        recipes are used as provided by `fairchem.core`.
+
+--------------------------------------------------------------------------------
+ASE, the Atomic Simulation Environment -- GNU LGPL v2.1 or later
+https://gitlab.com/ase/ase
+
+    Used as an unmodified library dependency (Atoms objects, optimizers,
+    calculator interface, I/O). No ASE source is included or modified here.
+
+--------------------------------------------------------------------------------
+pymatgen -- MIT License
+Copyright (c) Materials Virtual Lab
+https://github.com/materialsproject/pymatgen
+
+    Used as a library for structure and VASP input/output handling.
+
+--------------------------------------------------------------------------------
+DeePMD-kit -- GNU LGPL v3.0 or later
+https://github.com/deepmodeling/deepmd-kit
+
+    Used as an optional external calculator (`deepmd.calculator.DP`) behind
+    the `perovml[dpa3]` extra. No DeePMD-kit source is included or modified
+    here.
+
+--------------------------------------------------------------------------------
+Machine-learned potential checkpoints
+
+    No model weights are distributed with this repository. The DPA-3.1-3M
+    checkpoint and its `Omat24` model branch are obtained from their upstream
+    publisher and are governed by that publisher's terms, not by this
+    repository's MIT licence. See models/README.md.

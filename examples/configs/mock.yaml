@@ -1,0 +1,27 @@
+# Smoke-test configuration: one molecule, a handful of orientations, no ML model.
+#
+# Run it from the repository root with:
+#   python scripts/run_parallel_simple.py --config examples/configs/mock.yaml
+#
+# The mock calculator returns meaningless energies. Its only job is to prove that
+# sampling, relaxation and the output bookkeeping work before you spend GPU time.
+
+# Input structures (paths are relative to the working directory)
+slab: data/slabs/FAPbI3_3x3_zcut017.vasp
+molecules_dir: data/molecules
+pattern: "Acetone.vasp"        # a single molecule keeps the run short
+
+# Output directory
+output: outputs/mock
+
+# Sampling
+generator: Pb_heuristic_sample # Pb_uniform_sample | Pb_heuristic_sample | single | multi
+pb_num: 4                      # very few orientations
+pb_cone: 30.0                  # cone half-angle in degrees
+
+# Relaxation (deliberately loose so the test finishes in seconds)
+fmax: 0.5                      # force convergence threshold, eV/A
+steps: 10                      # maximum optimizer steps
+
+# Calculator
+calculator: mock
