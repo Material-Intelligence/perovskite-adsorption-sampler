@@ -15,8 +15,7 @@ tree:
   than redistributed here.
 
 A file of extra literal terms may be supplied with ``--deny-file`` or through the
-``PEROVML_RELEASE_DENY`` environment variable; it is read from outside the scanned tree, so
-no configuration file is needed inside the repository.
+``PEROVML_RELEASE_DENY`` environment variable.
 
 The check is deliberately fail-closed: it prints every match and exits non-zero if there is
 at least one, so a legitimate match has to be rewritten rather than silenced. Only the Python

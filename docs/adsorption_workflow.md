@@ -2,9 +2,8 @@
 
 Screening a directory of molecules against one slab, in two stages: a cheap machine-learned-potential
 (MLP) stage that generates and relaxes many candidate configurations, and an optional DFT stage that
-takes the survivors to VASP. The whole thing is restartable at the granularity of a single
-configuration, which is the point — a screening run that outlives its wall-clock limit should cost
-you the structures in flight, not the run.
+takes the survivors to VASP. It restarts at the granularity of a single configuration, so a run
+killed at its wall-clock limit loses only the structures in flight.
 
 The entry point is `scripts/run_adsorption.py`; the per-molecule logic lives in
 `perovml.recipes.adsorption.run_adsorption_task`.
@@ -88,7 +87,7 @@ outputs/adsorption/
     │   ├── slab.vasp      slab.json        # slab reference as used here
     │   ├── configs.traj   results.traj     # generated and relaxed trajectories
     │   ├── results/<name>.vasp, <name>.json
-    │   ├── best.vasp
+    │   ├── best.vasp  best_tags.json
     │   └── all_results.json
     └── dft/                                # only when run_dft or dft_generate_only
         ├── molecule/                       # INCAR POSCAR KPOINTS POTCAR (+ outputs)

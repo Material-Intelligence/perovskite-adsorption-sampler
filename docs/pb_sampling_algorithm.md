@@ -63,7 +63,7 @@ and orientation sampling with logic specialised for a Pb-I terminated surface. T
 - **Rotation Space**: Cone region centered around +Z direction (surface normal) with half-angle θ
 - **Sampling Method**: Spherical cap spiral + axial twist sampling
 - **Anchor Point**: Binding atom of the adsorbate (atom directly interacting with surface)
-- **Use Case**: Refined sampling for specific chemical binding directions, improving computational efficiency
+- **Use Case**: The binding atom and approximate direction are known; fewer orientations are needed than with uniform sampling
 
 **Mathematical Principles**:
 - Cone constraint: $\beta \in [0, \theta]$, where $\beta$ is the polar angle relative to the +Z axis
@@ -84,8 +84,8 @@ and orientation sampling with logic specialised for a Pb-I terminated surface. T
 |---------|-------------------|---------------------|
 | **Anchoring Strategy** | Center of Mass (COM) anchoring | Binding atom anchoring |
 | **Rotation Sampling** | Full SO(3) uniform distribution | Cone-constrained region |
-| **Sampling Efficiency** | Low (requires many samples for coverage) | High (focused on chemically relevant regions) |
-| **Physical Meaning** | Explore all possible orientations | Simulate realistic binding configurations |
+| **Typical Count** | 30–100 | 12–30 |
+| **Assumes** | Nothing about the binding geometry | The binding atom faces the surface, within θ of the normal |
 | **Application Stage** | Initial screening | Refined optimization |
 
 ## 5. Key Algorithm Components

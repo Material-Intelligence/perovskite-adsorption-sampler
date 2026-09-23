@@ -179,8 +179,8 @@ perovml place \
 | `--out-root` | `out_root` | `outputs` | Parent of the timestamped run directory. |
 
 Note that `--mode` here selects the sampler, whereas in a `perovml run` config the sampler is
-`generator` and `mode` means something narrower. This asymmetry is a wart; when in doubt, read the
-`config.yaml` that both commands write into the run directory — it records what was actually used.
+`generator` and `mode` means something narrower. The `config.yaml` that both commands write into the
+run directory records what was actually used.
 
 `--surface-fraction` is a fallback, used only when the Pb–I tagging finds no surface layer.
 Tagging the slab yourself (tag `1` for surface, `0` for bulk) before it reaches `perovml` is always
@@ -215,8 +215,7 @@ tells you what the code decided.
 
 ### Output directory and resuming
 
-`output` means something different in each script, and so does resuming. This is the one place
-where reading the wrong row costs you a run.
+`output` means something different in each script, and so does resuming.
 
 | | `run_adsorption.py` | `run_parallel_simple.py` |
 |---|---|---|

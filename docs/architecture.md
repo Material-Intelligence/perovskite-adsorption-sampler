@@ -145,7 +145,8 @@ run `scripts/run_parallel_simple.py --reduce-only` against the run directory.
   `self.atoms_list` and `self.metadata_list` in `__init__`, which is the whole contract the rest of
   the pipeline relies on.
 - **A different DFT code.** `VASPRunner` is only used through `generate_inputs`, `run` and
-  `parse_results`. A class with those three methods can be substituted in `run_dft_stage`, as long
-  as `parse_results` returns `converged` honestly: the stage refuses to record an energy without it.
+  `parse_results`. A class with those three methods can be substituted in `run_dft_stage`;
+  `parse_results` must set `converged` to true only for a converged run, since the stage records no
+  energy without it.
 - **A different scheduler.** Replace `get_slurm_env`; `shard_tasks` needs nothing but a rank and a
   count.

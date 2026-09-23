@@ -80,9 +80,7 @@ mpi = [
     "mpi4py>=3.1",
 ]
 
-# Compatibility alias. pymatgen became a core dependency, so this extra installs nothing that a
-# plain `pip install perovml` does not already give you. It is kept only so that an existing
-# `perovml[heuristic]` in someone's requirements file keeps resolving.
+# Compatibility alias; pymatgen is already a core dependency.
 heuristic = [
     "pymatgen>=2025.1.9",
 ]

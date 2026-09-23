@@ -1,4 +1,4 @@
-"""Calculator wrappers for various ML potentials, and the factory that selects one."""
+"""The mock and DPA-3 calculators, and the factory that selects mock, DPA-3 or UMA by name."""
 
 from perovml.calculators.factory import (
     CALCULATOR_ALIASES,

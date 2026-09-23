@@ -4,11 +4,10 @@ Two adsorbate-placement samplers for Pb–I terminated perovskite surfaces, buil
 [FAIRChem](https://github.com/facebookresearch/fairchem), with a resumable machine-learned-potential
 (MLP) to DFT screening workflow. The Python package and the console script are both named `perovml`.
 
-This is a domain-specific layer, not a simulation engine. `PbAdsorbateSlabConfig` subclasses
-FAIRChem's `AdsorbateSlabConfig`; energies and forces come from whatever ASE calculator you plug in;
-DFT is delegated to VASP. What the package contributes is the placement logic for a Pb–I surface,
-the bookkeeping that makes a long screening run restartable, and a VASP input/parsing stage that
-follows on from the MLP stage.
+`PbAdsorbateSlabConfig` subclasses FAIRChem's `AdsorbateSlabConfig`; energies and forces come from
+whatever ASE calculator you plug in; DFT is delegated to VASP. What the package contributes is the
+placement logic for a Pb–I surface, the bookkeeping that makes a long screening run restartable, and
+a VASP input/parsing stage that follows on from the MLP stage.
 
 ## What it does
 
@@ -61,7 +60,7 @@ a virtual environment does the same job if you would rather not use `uv`. Four e
 | `dpa3` | `deepmd-kit` | the DPA-3 calculator |
 | `smiles` | `rdkit` | `scripts/gen_from_smiles.py`, which builds molecules from SMILES |
 | `mpi` | `mpi4py` | rank discovery in `scripts/optimize_molecules.py`; it falls back to the Slurm environment variables without it |
-| `heuristic` | nothing new | Compatibility alias. pymatgen is a core dependency, so this extra installs nothing that a plain install does not already give you |
+| `heuristic` | nothing | Compatibility alias; installs nothing beyond the base package |
 
 A CPU-only PyTorch is enough for everything in this README; the samplers themselves do no tensor
 work, and only a real MLP calculator wants a GPU. If the default wheel is larger than you need,
@@ -92,8 +91,7 @@ best configuration written to example_output/best_adslab.vasp
 total wall clock: 0.3 s
 ```
 
-Those energies come from the mock calculator and carry no physical meaning; the script says so too.
-The point is that the plumbing runs end to end before you commit a GPU to it.
+These energies come from the mock calculator and have no physical meaning.
 
 The same thing from the command line, in two steps. First, placements only — no energies:
 
@@ -147,8 +145,8 @@ idx,energy,adsorption_energy,anomalies
 2,478.69855240445133,-78.72594185035798,
 ```
 
-Those numbers come from the mock calculator and mean nothing physically. Swap in a real calculator
-(`calculator: dpa3`, or `uma`) and the same commands produce numbers that do.
+These numbers come from the mock calculator; set `calculator: dpa3` or `uma` to get physical energies
+from the same commands.
 
 ## Command line
 
@@ -189,7 +187,7 @@ effect in [docs/parameters.md](docs/parameters.md). Ready-made configs live in `
 | `examples/configs/parallel.yaml` | `scripts/run_parallel_simple.py` | Sharded sampling over a molecule directory |
 | `examples/configs/dpa3.yaml` | `scripts/run_adsorption.py` | Full MLP screening with optional VASP verification |
 
-All paths in them are relative to the repository root, and no cluster-specific value is baked in.
+Paths in them are relative to the repository root.
 
 ## Models
 
@@ -242,7 +240,7 @@ tests/             pytest suite
 ## Licence
 
 MIT — see [LICENSE](LICENSE). Third-party components and what is derived from them are listed in
-[NOTICE](NOTICE). Model checkpoints are not covered by this licence and are not distributed here.
+[NOTICE](NOTICE).
 
 ## Acknowledgements
 

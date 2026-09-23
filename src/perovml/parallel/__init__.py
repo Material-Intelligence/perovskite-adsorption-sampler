@@ -1,4 +1,4 @@
-"""Lightweight parallel execution helpers that do not depend on the FAIRChem CLI or Hydra.
+"""Slurm task sharding and result merging.
 
 The modules here read the SLURM environment directly and slice a task list across
 ranks, which is enough for the embarrassingly parallel "one molecule per task"

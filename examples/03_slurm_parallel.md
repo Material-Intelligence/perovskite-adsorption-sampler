@@ -7,8 +7,7 @@ slice of the molecule list. There is no MPI communicator, no `torch.distributed`
 beyond `srun`.
 
 Sizing, file naming and the sharding guarantees are in
-[docs/architecture.md](../docs/architecture.md#parallel-execution). This page is about actually
-submitting the thing.
+[docs/architecture.md](../docs/architecture.md#parallel-execution).
 
 **The job scripts here are templates.** Account, partition, QOS and GPU-request syntax differ
 between sites, sometimes in the directive names themselves. Replace every `<PLACEHOLDER>` and check
@@ -84,8 +83,8 @@ with it.
 - **One GPU per rank.** Each rank loads its own copy of the potential, so memory scales with ranks
   per node, not with the molecule count.
 - **Prefer more, shorter jobs over one long one.** The resume is per molecule, so a job that dies at
-  the wall clock loses only the molecules in flight. Two two-hour jobs are strictly safer than one
-  four-hour job, and cheaper to schedule.
+  the wall clock loses only the molecules in flight. Two two-hour jobs lose less work to a wall-clock
+  kill than one four-hour job, and often start sooner.
 - **Uneven work?** `array_split` gives the remainder to the lowest-numbered ranks, so rank 0 finishes
   last. With molecules of very different sizes, use more shards than nodes and let the resume absorb
   the ragged edge.

@@ -719,7 +719,7 @@ def run_adsorption_task(
         |-- mlp/
         |   |-- molecule.vasp / .json
         |   |-- slab.vasp / .json
-        |   |-- best.vasp
+        |   |-- best.vasp / best_tags.json
         |   |-- configs.traj / results.traj
         |   |-- all_results.json
         |   `-- results/

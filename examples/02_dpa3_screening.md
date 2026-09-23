@@ -4,8 +4,8 @@
 the real thing: the same molecule screened under **both** samplers with a DPA-3 potential, the two
 sets compared, and then the same recipe scaled to a directory of molecules.
 
-Nothing here is specific to a cluster. Paths are relative to the repository root, and the one
-machine-specific value — where your model checkpoint lives — is an environment variable.
+Paths are relative to the repository root; the checkpoint location is read from an environment
+variable.
 
 ## Before you start
 

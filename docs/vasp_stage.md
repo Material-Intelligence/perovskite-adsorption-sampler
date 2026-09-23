@@ -1,9 +1,8 @@
 # The VASP stage
 
 `perovml.dft.vasp` is a thin driver: it writes VASP inputs, optionally runs VASP, parses what comes
-back, and can follow up with a Bader charge analysis. It is deliberately not a general VASP
-interface — the INCAR templates encode the settings this workflow was built around, and you are
-expected to override anything you disagree with.
+back, and can follow up with a Bader charge analysis. The INCAR templates encode this
+workflow's defaults; override any tag with `incar_override`.
 
 The workflow calls it through `run_dft_stage` ([adsorption_workflow.md](adsorption_workflow.md));
 this document is about the layer underneath, which is usable on its own.
