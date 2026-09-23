@@ -48,7 +48,7 @@ save_top: 5       # keep the top N structures, ranked by anomaly priority
 # -----------------------------------------------------------------------------
 # Precomputed references (optional; skips the matching relaxation)
 # -----------------------------------------------------------------------------
-# relaxed_slab_file: outputs/adsorption/slab/mlp/slab_relaxed.vasp
+# relaxed_slab_file: outputs/adsorption/slab/slab_opt.vasp
 # relaxed_slab_energy: -1234.56  # eV
 
 # -----------------------------------------------------------------------------

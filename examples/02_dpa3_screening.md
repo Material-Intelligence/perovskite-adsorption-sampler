@@ -126,9 +126,9 @@ outputs/compare/perovml_20260922_013659     24  26.113  27.954  1.029
 
 (Those are mock-calculator numbers from Step 0, which is why they are positive and meaningless. With
 DPA-3 the `min` column is the one that matters, and it should be negative for a molecule that binds.
-The uniform row also moves from run to run: `perovml run` takes no random seed, so
-`Pb_uniform_sample` draws fresh rotations each time, while the cone sampler walks a structured grid
-and reproduces its row unchanged on every re-run. Only `perovml place` accepts `--seed`.)
+The uniform row changes between runs unless you set `seed`, because `Pb_uniform_sample` draws
+random rotations; the cone sampler is deterministic and reproduces its row exactly. The seed each run
+used is recorded in its `provenance.json`.)
 
 What to look at:
 
@@ -183,7 +183,7 @@ sampler from the start, without that check, is the version of this that goes wro
 
 | Symptom | Likely cause |
 |---|---|
-| The run finishes instantly and the energies look arbitrary | `calculator` was misspelled. Anything unrecognised falls back to the mock calculator; check the first lines of the log. |
+| `ValueError: unknown calculator ...` | `calculator` is misspelled. The message lists the accepted names; the mock calculator runs only when asked for with `calculator: mock`. |
 | `ValueError` about a missing model path | Neither `dpa3_model_path` nor `$DPA3_MODEL_PATH` / `$DPA3_OMAT24_MODEL` is set. |
 | Every candidate is flagged as an anomaly | Usually the slab: wrong surface tags, or a vacuum gap too small for the molecule. Run `perovml place` and look at the generated structures before spending compute on them. |
 | The binding index is guessed wrong | Set `binding_index` explicitly; it is 0-based over the molecule file's own atom order. |

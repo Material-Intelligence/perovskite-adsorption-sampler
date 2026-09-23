@@ -17,8 +17,8 @@ follows on from the MLP stage.
   - `Pb_uniform_sample` — uniform SO(3) rotations from Marsaglia quaternions, molecule anchored at
     its centre of mass. Use it when you do not know how the molecule binds.
   - `Pb_heuristic_sample` — orientations restricted to a cone of half-angle θ about the surface
-    normal, sampled on a structured (β, ψ, φ) grid, molecule anchored at its *binding atom*. Use it
-    when you do.
+    normal, placed deterministically on a golden-angle spiral over the cone with an evenly stepped
+    twist, molecule anchored at its *binding atom*. Use it when you do.
 
   Both lift the molecule along the surface normal by a computed interstitial gap and tag the merged
   adslab (bulk `0`, surface `1`, adsorbate `2`) so downstream FAIRChem code treats it correctly.

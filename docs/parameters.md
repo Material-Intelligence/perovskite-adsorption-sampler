@@ -59,16 +59,16 @@ supercell, not a smaller threshold.
 | `num_sites` | `100` | Sites to sample, FAIRChem sampler only. |
 | `num_augmentations` | `1` | Orientations per site, FAIRChem sampler only. |
 | `num_configurations` | `1` | Configurations for the multi-adsorbate sampler. |
+| `interstitial_gap` | `0.1` | Extra clearance in Å kept when the molecule is lifted along the surface normal, on top of the covalent-radii contact distance. `Pb_*` generators only. |
+| `seed` | drawn and recorded | Seed for `Pb_uniform_sample`. Set it to repeat a run exactly. |
 
-The last three are the defaults of `perovml.core.recipes.perov_adslab_generator` itself, so they are
-the same whichever entry point you come in through. They do nothing for the `Pb_*` generators.
+`num_sites`, `num_augmentations` and `num_configurations` are the defaults of
+`perovml.core.recipes.perov_adslab_generator` itself, so they are the same whichever entry point you
+come in through. They do nothing for the `Pb_*` generators.
 
 Typical orientation counts: 12–30 for `Pb_heuristic_sample` (the cone already removes most of the
 space), 30–100 for `Pb_uniform_sample`. More orientations means better coverage and a proportionally
 longer run; the samplers themselves are instant, the relaxations are not.
-
-| `interstitial_gap` | `0.1` | Extra clearance in Å kept when the molecule is lifted along the surface normal, on top of the covalent-radii contact distance. `Pb_*` generators only. |
-| `seed` | drawn and recorded | Seed for `Pb_uniform_sample`. Set it to repeat a run exactly. |
 
 `Pb_heuristic_sample` walks a deterministic spiral over the cone and needs no seed. `Pb_uniform_sample`
 draws random rotations, so it takes one: set `seed` to reproduce a candidate set, or leave it out and
@@ -86,9 +86,8 @@ regenerate the same run later. `perovml place` takes the same thing as `--seed` 
 | `uma_inference` | `default` | `default` or `turbo`. |
 | `uma_device` | auto | `cuda`, `cpu`, or unset for automatic. |
 
-An unrecognised name is an error naming the accepted spellings, not a silent fall back: a typo such
-as `calculator: uma_m_1p1` used to produce a complete, well-formed report of mock energies with
-nothing to distinguish it from a real run. The mock calculator has to be asked for by name.
+An unrecognised name is an error that lists the accepted spellings. The mock calculator is used only
+when named.
 
 Which calculator, model file and task head actually ran is written to `provenance.json` in the run
 directory (and to `metadata.json` under `calculator_provenance` for the batch scripts), including the
@@ -208,7 +207,7 @@ tells you what the code decided.
 | `slab` | *required* | Slab file. Relaxed once and reused for every molecule. |
 | `molecules_dir` | *required* | Directory of adsorbate structure files. |
 | `pattern` | `*.vasp` | Glob applied under `molecules_dir`. |
-| `calculator` | mock | `scripts/run_adsorption.py` accepts `dpa3` and `uma`; `scripts/run_parallel_simple.py` accepts `dpa3` only. Any other value gives the mock calculator. |
+| `calculator` | *required* (`run_parallel_simple.py`: `mock`) | `mock`, `dpa3` or `uma`, with the aliases in §1. An unrecognised name is an error. On the `run_parallel_simple.py` command line, `--calculator` accepts `mock` and `dpa3`. |
 | `model_path` / `dpa3_model_path` | `$DPA3_OMAT24_MODEL`, `$DPA3_MODEL_PATH` | DPA-3 checkpoint. |
 | `uma_model`, `uma_task`, `uma_device`, `uma_inference` | as in §1 | UMA settings, `scripts/run_adsorption.py` only. |
 | `save_top` | `5` | Structures kept per molecule; `"all"` keeps every candidate. |

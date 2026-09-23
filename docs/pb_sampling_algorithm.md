@@ -76,11 +76,6 @@ and orientation sampling with logic specialised for a Pb-I terminated surface. T
   samples share a meridian; twist $\phi_i = 2\pi i / N$
 - The sampler is deterministic: the same $N$ and $\theta$ always give the same orientations
 
-> An earlier implementation built a full $\beta \times \psi \times \phi$ grid of size
-> $N_u \approx N^{2/3}$ and truncated it to $N$. With $\beta$ as the outer loop the truncation kept
-> only the first band, so every orientation it returned sat exactly on the rim and the upright
-> geometry was never generated. `tests/test_placement.py` now asserts the coverage directly.
-
 ## 4. Comparison of Two Modes
 
 ![Algorithm Flowchart 5](images/diagram_5.svg)
@@ -127,9 +122,6 @@ Tag definitions:
 - `tag = 2`: Adsorbate atoms
 
 ## 7. Scope and Limitations
-
-What these samplers do and do not assume is worth stating plainly, because it bounds what a result
-from them means:
 
 - **One site per slab.** Both modes place the adsorbate at the single surface Pb atom nearest the
   cell centre. They do not scan sites. If the interesting chemistry happens at an iodine, a vacancy

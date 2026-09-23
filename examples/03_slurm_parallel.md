@@ -108,7 +108,7 @@ On a one-molecule, one-rank smoke test the same call returns:
 
 ```python
 {'files_found': 1, 'expected_num_jobs': 1, 'missing_jobs': [], 'total_records': 1,
- 'expected_tasks': 1, 'is_complete': True}
+ 'failed_records': 0, 'failed_tasks': [], 'expected_tasks': 1, 'is_complete': True}
 ```
 
 A non-empty `missing_jobs` names the ranks whose files never appeared. Re-submit the same script:
